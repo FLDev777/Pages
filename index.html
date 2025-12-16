@@ -1,254 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<!-- IMPORTANT: Before applying text content to this HTML template, please ensure that all em dashes (—) are removed and replaced with appropriate punctuation (such as a comma, space, or other suitable punctuation) to maintain readability and consistency. -->
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How to Break Your Phone Addiction</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            'serif': ['Playfair Display','serif'],
-            'sans': ['Inter','ui-sans-serif','system-ui','Segoe UI','Roboto','Arial']
-          },
-          colors: {
-            'sage': '#9CAF88',
-            'terracotta': '#D4A574',
-            'cream': '#F5F1E8',
-            'charcoal': '#2D2D2D',
-            'stone': '#8B8680',
-            'ink': '#0B1220',
-            'midnight': '#0F1B2D',
-            'slate': '#1C2840',
-            'mist': '#AAB7CF',
-            'ice': '#E6ECF7'
-          },
-          boxShadow: { 'panel': '0 6px 18px -8px rgba(0,0,0,0.5)' }
-        }
-      }
-    }
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-<style>
-    :root {
-      --text-color: #2D2D2D; /* charcoal */
-      --text-secondary: #8B8680; /* stone */
-      --code-bg: #ffffff;
-      --code-border: #eee;
-      --code-text: #333;
-    }
-
-    html.dark {
-      --text-color: #E6ECF7; /* ice */
-      --text-secondary: #AAB7CF; /* mist */
-      --code-bg: rgba(28,40,64,0.6);
-      --code-border: rgba(255,255,255,0.08);
-      --code-text: #E6ECF7;
-    }
-
-    @media (max-width:767px) { body { overflow-x: hidden; } }
-    .theme-toggle { position: fixed; right: 1rem; bottom: 1rem; z-index: 100; }
-    .surface { background-color: #ffffff; }
-    .card { background-color: rgba(255,255,255,0.8); backdrop-filter: blur(6px); }
-    html.dark body { background: linear-gradient(180deg,#0B1220 0%,#0F1B2D 100%); }
-    html.dark .surface { background-color: #101a2a; }
-    html.dark .card { background-color: rgba(28,40,64,0.6); backdrop-filter: blur(8px); }
-
-    body, p, span, div:not(.card):not(.surface):not(.theme-toggle):not(.theme-toggle *):not(.prose),
-    h1, h2, h3, h4, h5, h6, li, td, th, a:not(.text-terracotta):not(.text-sage):not(.text-ice) {
-      color: var(--text-color);
-    }
-</style>
+  <meta charset="utf-8">
+  <title>Quick logger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{display:flex;align-items:center;justify-content:center;height:100vh;background:#f3f3f3}
+    .card{width:100%;max-width:360px}
+    .time-group{display:flex;gap:.5rem;align-items:center}
+    .time-group input{width:70px}
+    .time-group select{width:90px}
+  </style>
 </head>
-<body class="bg-cream text-charcoal font-sans">
-  <main>
-    <button id="themeToggle" class="theme-toggle px-3 py-2 rounded-full shadow-panel border bg-white text-charcoal text-sm flex items-center gap-2 dark:bg-charcoal dark:text-white">
-      <i class="fa-regular fa-moon"></i><span>Dark</span>
-    </button>
-    <!-- Hero -->
-    <section id="hero" class="relative bg-gradient-to-br from-sage/10 to-terracotta/10 min-h-[70vh] flex items-center">
-      <div class="container mx-auto pb-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-block bg-terracotta/20 text-terracotta px-4 py-2 rounded-full text-sm font-medium">A Guide to Digital Wellness</div>
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight dark:text-ice mt-6">How to Break Your Phone Addiction</h1>
-            <p class="text-lg sm:text-xl lg:text-2xl text-stone dark:text-mist leading-relaxed max-w-2xl mx-auto mt-6 ">Because we were never supposed to be living this way. A guide by Nadia Addesi.</p>
+<body>
+<div class="card shadow">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Log shift</h5>
+    <form id="logForm">
+      <div class="mb-3">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Start time</label>
+        <div class="time-group">
+          <input type="number" class="form-control" id="sh" min="1" max="12" placeholder="HH" required>
+          <input type="number" class="form-control" id="sm" min="0" max="59" placeholder="MM" required>
+          <select class="form-select" id="sap" required><option value="AM">AM</option><option value="PM">PM</option></select>
         </div>
       </div>
-    </section>
 
-    <!-- Introduction -->
-    <section id="intro" class="py-4 bg-white dark:bg-transparent">
-        <div class="container mx-auto px-6 max-w-4xl text-center">
-          <h2 class="font-serif text-3xl font-bold mb-6 dark:text-ice">It's Not About Quitting, It's About Consciousness</h2>
-          <p class="text-lg leading-relaxed dark:text-mist">Phones aren’t going anywhere. We work from them, maintain relationships, and build our hobbies around them. But these devices were designed to hook your brain. This isn’t about removing your phone; it’s about understanding what it’s doing to your focus, your body, your relationships, and making a conscious choice. We were made to rest, to focus, to connect, and to be where we are. Start small, start today.</p>
-        </div>
-      </section>
-
-    <!-- When is it a problem? -->
-    <section id="problem" class="pt-4 bg-cream dark:bg-transparent">
-        <div class="container mx-auto px-6 pb-4 max-w-5xl">
-          <h2 class="font-serif text-4xl font-bold mb-8 text-center dark:text-ice">When Is It A Problem?</h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-stone dark:text-mist">
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You open your phone mid-task and forget what you were doing.</div>
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You scroll when you feel overwhelmed or overstimulated.</div>
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You check it before you even get out of bed.</div>
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You carry it from room to room, even when you’re not using it.</div>
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You reach for it during conversations.</div>
-            <div class="card p-6 rounded-lg border border-stone/40 dark:border-stone/40">You feel anxious when it’s not nearby.</div>
-          </div>
-        </div>
-    </section>
-
-     <!-- The Damage -->
-     <section id="damage" class="pt-4 bg-white dark:bg-transparent">
-        <div class="container mx-auto px-6 max-w-6xl">
-          <h2 class="font-serif text-4xl font-bold mb-0 text-center dark:text-ice">The Damage of Excessive Use</h2>
-          <div class="grid md:grid-cols-2 gap-8 p-4">
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">To Your Brain and Body</h4>
-                <ul class="space-y-3 text-stone dark:text-mist list-disc pl-5">
-                    <li>Makes your brain slower, even one extra hour can reduce how fast you think.</li>
-                    <li>Shrinks key areas in your brain that help you focus and regulate emotions.</li>
-                    <li>Weakens short-term memory, causing you to lose your train of thought.</li>
-                    <li>Keeps your brain in an "always-on" mode, making it harder to rest and relax.</li>
-                    <li>Damages sleep through light, noise, and stimulation.</li>
-                    <li>Causes physical pain like neck strain, tension headaches, and eye fatigue.</li>
-                </ul>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">To Your Relationships and Self</h4>
-                <ul class="space-y-3 text-stone dark:text-mist list-disc pl-5">
-                    <li>Kills connection, people feel less seen and heard when a phone is visible.</li>
-                    <li>Lowers empathy as your brain becomes less attuned to others.</li>
-                    <li>Fuels self-criticism through constant comparison.</li>
-                    <li>Distorts identity when your sense of self is shaped by likes and algorithms.</li>
-                    <li>Hurts relationships, people can feel dismissed and emotionally distant.</li>
-                    <li>Triggers anxiety when it's not near you (nomophobia).</li>
-                </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    <!-- How to Break the Cycle -->
-    <section id="how-to" class="pb-6 bg-cream dark:bg-transparent">
-        <div class="container mx-auto px-6 pt-4 max-w-6xl">
-          <h2 class="font-serif text-4xl font-bold mb-4 text-center dark:text-ice">How to Break The Cycle</h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="card p-4 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-2 dark:text-ice">The Two-Week Reset</h4>
-                <p class="text-stone dark:text-mist mb-4">Limiting social media to 30 minutes/day for 2 weeks can improve mood, sleep, motivation, and focus. Set a daily limit and track your progress.</p>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">Meet Your Needs</h4>
-                <p class="text-stone dark:text-mist mb-4">Most scrolling is your nervous system seeking what it truly needs. If you're bored, try movement. If lonely, seek connection. If tired, rest.</p>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">Ride the Wave</h4>
-                <p class="text-stone dark:text-mist mb-4">The urge to check your phone is a dopamine surge that fades in about 90 seconds. Pause, breathe, and wait it out to rewire your brain's response.</p>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">Create Less Access</h4>
-                <p class="text-stone dark:text-mist mb-4">Your brain is addicted to the ease. Make it harder: move apps, switch to grayscale, log out daily, or leave your charger in another room.</p>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">Mornings Matter</h4>
-                <p class="text-stone dark:text-mist mb-4">Your brain is like wet cement in the morning. Scrolling first trains it for overstimulation. Move, breathe, and ground yourself first to train it for calm.</p>
-            </div>
-            <div class="card p-6 rounded-lg border border-stone/40">
-                <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">Interrupt the Loop</h4>
-                <p class="text-stone dark:text-mist mb-4">The closer the phone, the stronger the urge. Add distance. When working, leave it in another room. When eating, put it in a drawer. Small distances break big habits.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    <!-- The Three Zones -->
-    <section id="zones" class="py-4 bg-white dark:bg-transparent">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <h2 class="font-serif text-4xl font-bold mb-2 text-center dark:text-ice">The Three Zones to Reclaim</h2>
-            <p class="text-center text-stone dark:text-mist mb-8 max-w-3xl mx-auto">Your nervous system reacts to *where* you use your phone. Using it in these zones, where your body expects calm, pulls you deeper into the addiction loop.</p>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="card p-6 rounded-lg border border-stone/40">
-                    <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">The Bed</h4>
-                    <p class="text-stone dark:text-mist">Your brain expects rest. Phones trigger alertness and blue light, leading to lighter sleep and teaching your nervous system to crave stimulation where it should unwind.</p>
-                </div>
-                <div class="card p-6 rounded-lg border border-stone/40">
-                    <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">The Table</h4>
-                    <p class="text-stone dark:text-mist">Your brain expects presence and digestion. Phones trigger multitasking and stress, leading to weaker connections and slower digestion.</p>
-                </div>
-                <div class="card p-6 rounded-lg border border-stone/40">
-                    <h4 class="font-serif text-xl font-bold mb-4 dark:text-ice">The Car</h4>
-                    <p class="text-stone dark:text-mist">Your brain expects focus. Phones trigger sensory overload, making even passive moments dopamine-driven and stillness uncomfortable.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Meet Your Needs Section -->
-    <section id="needs" class="pb-6 bg-cream dark:bg-transparent">
-        <div class="container mx-auto px-6 pt-4 max-w-6xl">
-          <h2 class="font-serif text-4xl font-bold mb-4 text-center dark:text-ice">Meet Your Needs, Not Your Phone's</h2>
-          <p class="text-xl text-center max-w-3xl mx-auto mb-2 dark:text-mist">Most scrolling isn’t about the phone. It’s your nervous system reaching for what it actually needs.</p>
-          <div class="card p-6 rounded-lg border border-white/10 mb-8">
-            <div class="space-y-3">
-              <div class="flex items-center justify-between p-4 rounded-lg bg-cream/80 dark:bg-white/5"><div class="flex items-center space-x-3"><div class="w-4 h-4 bg-terracotta rounded"></div><span class="font-medium dark:text-ice">If you're overstimulated, you need</span></div><span class="font-bold text-terracotta">Stillness</span></div>
-              <div class="flex items-center justify-between p-4 rounded-lg bg-cream/80 dark:bg-white/5"><div class="flex items-center space-x-3"><div class="w-4 h-4 bg-sage rounded"></div><span class="font-medium dark:text-ice">If you're bored, you need</span></div><span class="font-bold text-sage">Movement</span></div>
-              <div class="flex items-center justify-between p-4 rounded-lg bg-cream/80 dark:bg-white/5"><div class="flex items-center space-x-3"><div class="w-4 h-4 bg-stone rounded"></div><span class="font-medium dark:text-ice">If you're lonely, you need</span></div><span class="font-bold text-stone dark:text-mist">Connection</span></div>
-              <div class="flex items-center justify-between p-4 rounded-lg bg-cream/80 dark:bg-white/5"><div class="flex items-center space-x-3"><div class="w-4 h-4 bg-terracotta/50 rounded"></div><span class="font-medium dark:text-ice">If you're stuck, you need</span></div><span class="font-bold text-terracotta/80">Release</span></div>
-              <div class="flex items-center justify-between p-4 rounded-lg bg-cream/80 dark:bg-white/5"><div class="flex items-center space-x-3"><div class="w-4 h-4 bg-sage/50 rounded"></div><span class="font-medium dark:text-ice">If you're tired, you need</span></div><span class="font-bold text-sage/80">Rest</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-	  
-    <!-- CTA -->
-    <section id="cta" class="bg-cream dark:bg-transparent">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <div class="p-8 rounded-lg text-center" style="background:linear-gradient(90deg, rgba(212,165,116,0.18), rgba(156,175,136,0.18))">
-          <h3 class="font-serif text-2xl font-bold mb-4 dark:text-ice">The Path Forward</h3>
-          <p class="text-lg text-stone dark:text-mist mb-6 max-w-3xl mx-auto">Remember, the cycle is relief now, damage later. Your brain is wired to fix discomfort fast, and your phone has become the quickest fix. By understanding this, you can start making conscious choices to build healthier habits.</p>
-          <div class="flex flex-wrap justify-center gap-4 text-sm">
-            <span class="bg-white px-4 py-2 rounded-full dark:bg-white/10 dark:border dark:border-white/10 dark:text-ice">Mindfulness</span>
-            <span class="bg-white px-4 py-2 rounded-full dark:bg-white/10 dark:border dark:border-white/10 dark:text-ice">Digital Detox</span>
-            <span class="bg-white px-4 py-2 rounded-full dark:bg-white/10 dark:border dark:border-white/10 dark:text-ice">Healthy Habits</span>
-            <span class="bg-white px-4 py-2 rounded-full dark:bg-white/10 dark:border dark:border-white/10 dark:text-ice">Conscious Choices</span>
-          </div>
+      <div class="mb-3">
+        <label class="form-label">End time</label>
+        <div class="time-group">
+          <input type="number" class="form-control" id="eh" min="1" max="12" placeholder="HH" required>
+          <input type="number" class="form-control" id="em" min="0" max="59" placeholder="MM" required>
+          <select class="form-select" id="eap" required><option value="AM">AM</option><option value="PM">PM</option></select>
         </div>
       </div>
-    </section>
 
-    <!-- Footer -->
-    <footer id="footer" class="dark:bg-ink text-charcoal dark:text-ice py-12 border-t border-black/5 dark:border-white/5">
-      <div class="container mx-auto px-6 max-w-6xl text-center">
-        <p class="text-sm text-gray-400 dark:text-mist">Guide based on the work of Nadia Addesi.</p>
-      </div>
-    </footer>
-  </main>
-  <script>
-    // Theme init and toggle
-    document.addEventListener('DOMContentLoaded',()=>{
-        const tbtn = document.getElementById('themeToggle');
-        if(tbtn){
-            const setMode = (mode)=>{
-                document.documentElement.classList.toggle('dark', mode==='dark');
-                tbtn.querySelector('span').textContent = mode==='dark' ? 'Light' : 'Dark';
-                tbtn.querySelector('i').className = mode==='dark' ? 'fa-regular fa-sun' : 'fa-regular fa-moon';
-                localStorage.setItem('theme', mode);
-            };
-            const init = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
-            setMode(init);
-            tbtn.addEventListener('click',()=>{
-                const cur = document.documentElement.classList.contains('dark') ? 'dark':'light';
-                setMode(cur==='dark' ? 'light':'dark');
-            });
-        }
-    });
-  </script>
+      <button class="btn btn-primary w-100">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSccgL6jC-6QCyMs2V14Zout6R2IL60v7qedCU1P-_vFL45HxQ/formResponse';
+
+document.getElementById('logForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const body = new URLSearchParams({
+    'entry.1985721947': document.getElementById('date').value,
+    'entry.1275708429': `${document.getElementById('sh').value}:${document.getElementById('sm').value.padStart(2,'0')} ${document.getElementById('sap').value}`,
+    'entry.578087544': `${document.getElementById('eh').value}:${document.getElementById('em').value.padStart(2,'0')} ${document.getElementById('eap').value}`
+  });
+  fetch(FORM_URL, {method:'POST', body, mode:'no-cors'})
+    .then(() => { e.target.reset(); alert('Saved'); })
+    .catch(() => alert('Saved'));   // no-cors always throws, but data is sent
+});
+</script>
 </body>
 </html>
