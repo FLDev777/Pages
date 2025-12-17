@@ -1,62 +1,153 @@
-<div class="card shadow">
-  <div class="card-body">
-    <h5 class="card-title mb-3">Log shift</h5>
-    <form id="logForm">
-      <div class="mb-3">
-        <label class="form-label">Date</label>
-        <input type="date" class="form-control" id="date" required>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick-shift logger</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background-color: #f8f9fa; }
+        .container { max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-primary { width: 100%; padding: 12px; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
 
-      <div class="mb-3">
-        <label class="form-label">Start time (24 h)</label>
-        <div class="time-group">
-          <input type="number" class="form-control" id="sh" min="0" max="23" placeholder="HH" required>
-          <input type="number" class="form-control" id="sm" min="0" max="59" placeholder="MM" required>
+<div class="container">
+    <h2 class="mb-4 text-center">Shift Logger</h2>
+    
+    <form id="shiftForm">
+        <!-- Date Picker -->
+        <div class="mb-3">
+            <label for="shiftDate" class="form-label">Date</label>
+            <input type="date" class="form-control" id="shiftDate" required>
         </div>
-      </div>
 
-      <div class="mb-3">
-        <label class="form-label">End time (24 h)</label>
-        <div class="time-group">
-          <input type="number" class="form-control" id="eh" min="0" max="23" placeholder="HH" required>
-          <input type="number" class="form-control" id="em" min="0" max="59" placeholder="MM" required>
+        <!-- Start Time (24h input) -->
+        <div class="mb-3">
+            <label for="startTime" class="form-label">Start Time</label>
+            <input type="time" class="form-control" id="startTime" required>
         </div>
-      </div>
 
-      <button class="btn btn-primary w-100">Send</button>
+        <!-- End Time (24h input) -->
+        <div class="mb-3">
+            <label for="endTime" class="form-label">End Time</label>
+            <input type="time" class="form-control" id="endTime" required>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn btn-primary">SEND</button>
     </form>
-  </div>
 </div>
 
 <script>
-const FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSccgL6jC-6QCyMs2V14Zout6R2IL60v7qedCU1P-_vFL45HxQ/formResponse';
+    // --- CONFIGURATION ---
+    // Google Form Submission URL
+    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSccgL6jC-6QCyMs2V14Zout6R2IL60v7qedCU1P-_vFL45HxQ/formResponse';
+    
+    // Field IDs (Extracted from your summary)
+    const FIELD_DATE_YEAR = 'entry.1602883467_year';
+    const FIELD_DATE_MONTH = 'entry.1602883467_month';
+    const FIELD_DATE_DAY  = 'entry.1602883467_day';
+    
+    const FIELD_START_HOUR   = 'entry.1985115734_hour';
+    const FIELD_START_MINUTE = 'entry.1985115734_minute';
+    const FIELD_START_AMPM   = 'entry.1985115734_ampm';
+    
+    const FIELD_END_HOUR   = 'entry.337026052_hour';
+    const FIELD_END_MINUTE = 'entry.337026052_minute';
+    const FIELD_END_AMPM   = 'entry.337026052_ampm';
 
-document.getElementById('logForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const d = document.getElementById('date').value.split('-');
-  const body = new URLSearchParams({
-  'entry.1602883467_year':  d[0],
-  'entry.1602883467_month': d[1],
-  'entry.1602883467_day':   d[2],
+    // --- LOGIC ---
+    document.getElementById('shiftForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Sending...";
 
-  'entry.1985115734_hour':   document.getElementById('sh').value,
-  'entry.1985115734_minute': document.getElementById('sm').value.padStart(2,'0'),
-  'entry.1985115734_ampm':   'AM',          // <- new
+        try {
+            // 1. Get Values
+            const dateVal = document.getElementById('shiftDate').value; // yyyy-mm-dd
+            const startVal = document.getElementById('startTime').value; // HH:mm
+            const endVal = document.getElementById('endTime').value;     // HH:mm
 
-  'entry.337026052_hour':    document.getElementById('eh').value,
-  'entry.337026052_minute':  document.getElementById('em').value.padStart(2,'0'),
-  'entry.337026052_ampm':    'AM',          // <- new
+            if(!dateVal || !startVal || !endVal) throw new Error("All fields required");
 
-  'dlut': Date.now(),
-  'fvv': 1,
-  'partialResponse': '[null,null,"2551979276730601639"]',
-  'pageHistory': 0,
-  'fbzx': '2551979276730601639',
-  'submissionTimestamp': Date.now(),
-  'origin': 'https://docs.google.com'
-});
-  fetch(FORM_URL, {method:'POST', body, mode:'no-cors'})
-    .then(() => { e.target.reset(); alert('Saved'); })
-    .catch(() => alert('Saved'));
-});
+            // 2. Parse Date
+            const [year, month, day] = dateVal.split('-');
+
+            // 3. Helper: Convert 24h string (14:30) to 12h parts (2, 30, PM)
+            function convertTo12Hour(timeStr) {
+                let [h, m] = timeStr.split(':');
+                h = parseInt(h);
+                let ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12;
+                h = h ? h : 12; // the hour '0' should be '12'
+                return { h: h, m: m, ampm: ampm };
+            }
+
+            const start = convertTo12Hour(startVal);
+            const end = convertTo12Hour(endVal);
+
+            // 4. Build Payload
+            const data = new URLSearchParams();
+            
+            // Date
+            data.append(FIELD_DATE_YEAR, year);
+            data.append(FIELD_DATE_MONTH, month);
+            data.append(FIELD_DATE_DAY, day);
+            
+            // Start Time
+            data.append(FIELD_START_HOUR, start.h);
+            data.append(FIELD_START_MINUTE, start.m);
+            data.append(FIELD_START_AMPM, start.ampm);
+            
+            // End Time
+            data.append(FIELD_END_HOUR, end.h);
+            data.append(FIELD_END_MINUTE, end.m);
+            data.append(FIELD_END_AMPM, end.ampm);
+            
+            // Required Hidden Field for minimal submission
+            data.append('pageHistory', '0');
+
+            // 5. Send
+            fetch(GOOGLE_FORM_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: data
+            })
+            .then(() => {
+                // Because mode is no-cors, we can't check response.ok. 
+                // We assume if fetch didn't throw network error, it went through.
+                alert('Saved!');
+                document.getElementById('shiftForm').reset();
+                // Reset Date to today for convenience
+                document.getElementById('shiftDate').valueAsDate = new Date();
+            })
+            .catch(err => {
+                alert('Error: ' + err.message);
+                console.error(err);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+
+        } catch (error) {
+            alert("Setup Error: " + error);
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+    });
+
+    // Initialize date picker to today
+    document.getElementById('shiftDate').valueAsDate = new Date();
 </script>
+
+</body>
+</html>
