@@ -47,7 +47,9 @@ document.getElementById('logForm').addEventListener('submit', e => {
     'partialResponse': '[null,null,"2551979276730601639"]',
     'pageHistory': 0,
     'fbzx': '2551979276730601639',
-    'submissionTimestamp': Date.now()
+    'submissionTimestamp': Date.now(),
+
+    'origin': 'https://docs.google.com'
   });
   fetch(FORM_URL, {method:'POST', body, mode:'no-cors'})
     .then(() => { e.target.reset(); alert('Saved'); })
