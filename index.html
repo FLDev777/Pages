@@ -51,14 +51,31 @@ const FORM_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSccgL6jC-6QCyMs2V
 
 document.getElementById('logForm').addEventListener('submit', e => {
   e.preventDefault();
+
+  const d = document.getElementById('date').value.split('-'); // YYYY-MM-DD
   const body = new URLSearchParams({
-    'entry.1985721947': document.getElementById('date').value,
-    'entry.1275708429': `${document.getElementById('sh').value}:${document.getElementById('sm').value.padStart(2,'0')} ${document.getElementById('sap').value}`,
-    'entry.578087544': `${document.getElementById('eh').value}:${document.getElementById('em').value.padStart(2,'0')} ${document.getElementById('eap').value}`
+    'entry.1602883467_year':  d[0],
+    'entry.1602883467_month': d[1],
+    'entry.1602883467_day':   d[2],
+
+    'entry.1985115734_hour':   document.getElementById('sh').value,
+    'entry.1985115734_minute': document.getElementById('sm').value.padStart(2,'0'),
+
+    'entry.337026052_hour':    document.getElementById('eh').value,
+    'entry.337026052_minute':  document.getElementById('em').value.padStart(2,'0'),
+
+    // hidden fields – copy the values from a real form submission
+    'dlut': Date.now(),
+    'fvv': 1,
+    'partialResponse': '[null,null,"2551979276730601639"]', // same seed your form uses
+    'pageHistory': 0,
+    'fbzx': '2551979276730601639',
+    'submissionTimestamp': Date.now()
   });
+
   fetch(FORM_URL, {method:'POST', body, mode:'no-cors'})
     .then(() => { e.target.reset(); alert('Saved'); })
-    .catch(() => alert('Saved'));   // no-cors always throws, but data is sent
+    .catch(() => alert('Saved'));
 });
 </script>
 </body>
